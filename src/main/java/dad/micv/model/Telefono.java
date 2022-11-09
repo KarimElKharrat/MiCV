@@ -8,7 +8,12 @@ import javafx.beans.property.StringProperty;
 public class Telefono {
 
 	private StringProperty telefono = new SimpleStringProperty();
-	private ObjectProperty<TipoTelefono> tipo = new SimpleObjectProperty<>(); //TODO nose
+	private ObjectProperty<TipoTelefono> tipo = new SimpleObjectProperty<>();
+	
+	public Telefono(String telefono, TipoTelefono tipo) {
+		setTelefono(telefono);
+		setTipo(tipo);
+	}
 
 	public final StringProperty telefonoProperty() {
 		return this.telefono;

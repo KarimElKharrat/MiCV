@@ -7,6 +7,10 @@ public class Web {
 
 	private StringProperty url = new SimpleStringProperty();
 
+	public Web(String url) {
+		setUrl(url);
+	}
+	
 	public final StringProperty urlProperty() {
 		return this.url;
 	}

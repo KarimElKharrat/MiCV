@@ -7,6 +7,10 @@ public class Email {
 
 	private StringProperty direccion = new SimpleStringProperty();
 
+	public Email(String direccion) {
+		setDireccion(direccion);
+	}
+	
 	public final StringProperty direccionProperty() {
 		return this.direccion;
 	}
