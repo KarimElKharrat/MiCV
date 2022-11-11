@@ -133,15 +133,6 @@ public class MainController implements Initializable {
 
 	@FXML
 	void onNuevoAction(ActionEvent event) {
-		try {
-			if(file != null) {
-				if(file.exists())
-					file.delete();
-				file.createNewFile();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		nuevo(0);
 	}
 	
