@@ -3,6 +3,8 @@ package dad.micv.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -39,7 +41,8 @@ public class MainController implements Initializable {
 	private CV cv = new CV();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private File file = new File("C:\\Users\\Karim\\Documents\\cv\\datos.cv");
+	private static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv";
+	private File file = new File(DEFAULT_PATH + "\\datos.cv");
 	
 	// controllers
 	
@@ -88,6 +91,14 @@ public class MainController implements Initializable {
 		// initialize controllers
 		
 		initializeControllers();
+		
+		try {
+			Files.createDirectories(Paths.get(file.getParent()));
+			file.createNewFile();
+			guardar();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// load data
 		
@@ -138,7 +149,7 @@ public class MainController implements Initializable {
     void onAbrirAction(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Abrir archivo");
-		fileChooser.setInitialDirectory(new File("C:\\Users\\Karim\\Documents\\cv"));
+		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
 		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
 		fileChooser.getExtensionFilters().add(jpgFilter);
 		fileChooser.setSelectedExtensionFilter(jpgFilter);
@@ -171,7 +182,7 @@ public class MainController implements Initializable {
     void onGuardarComoAction(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Guardar archivo");
-		fileChooser.setInitialDirectory(new File("C:\\Users\\Karim\\Documents\\cv"));
+		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
 		fileChooser.setInitialFileName("datos.cv");
 		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
 		fileChooser.getExtensionFilters().add(jpgFilter);
