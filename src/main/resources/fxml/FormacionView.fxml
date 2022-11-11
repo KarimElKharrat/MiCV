@@ -9,7 +9,7 @@
 
 <BorderPane fx:id="view" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <TableView fx:id="formacionTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+      <TableView fx:id="formacionTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="desdeColumn" prefWidth="75.0" text="Desde" />
           <TableColumn fx:id="hastaColumn" prefWidth="75.0" text="Hasta" />
@@ -17,7 +17,7 @@
             <TableColumn fx:id="organizacionColumn" minWidth="-Infinity" text="Organización" />
         </columns>
          <BorderPane.margin>
-            <Insets bottom="5.0" />
+            <Insets />
          </BorderPane.margin>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

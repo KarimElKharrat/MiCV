@@ -37,7 +37,7 @@ public class HabilidadesController implements Initializable {
 	
 	// controllers
 	
-	AñadirConocimientoController añadirConocimientoController = new AñadirConocimientoController();
+	AñadirConocimientoController añadirConocimientoController;
 	
 	// view
 	
@@ -91,6 +91,7 @@ public class HabilidadesController implements Initializable {
 		Dialog<Conocimiento> dialog = new Dialog<>();
 		dialog.setTitle("Añadir conocimiento");
 		dialog.setHeaderText("Añade un nuevo conocimiento.");
+		dialog.setResizable(true);
 		dialog.initOwner(MiCVApp.primaryStage);
 		
 		ButtonType loginButtonType = new ButtonType("Crear", ButtonData.OK_DONE);

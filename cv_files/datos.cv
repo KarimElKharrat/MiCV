@@ -1,0 +1,77 @@
+{
+  "personal": {
+    "identificacion": "datos",
+    "nombre": "datos",
+    "apellidos": "datos",
+    "fechaNacimiento": {
+      "year": 2022,
+      "month": 11,
+      "day": 1
+    },
+    "direccion": "datosdatosdatosdatosdatos",
+    "codigoPostal": "123456",
+    "localidad": "datos",
+    "pais": "﻿Afganistán",
+    "nacionalidades": [
+      {
+        "denominacion": "﻿afgano"
+      }
+    ]
+  },
+  "contacto": {
+    "telefonos": [
+      {
+        "telefono": "datos",
+        "tipo": "DOMICILIO"
+      }
+    ],
+    "emails": [
+      {
+        "direccion": "datos"
+      }
+    ],
+    "webs": [
+      {
+        "url": "http://datos"
+      }
+    ]
+  },
+  "formacion": [
+    {
+      "desde": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "denominacion": "datos",
+      "organizador": "datos"
+    }
+  ],
+  "experencias": [
+    {
+      "desde": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "denominacion": "datos",
+      "empleador": "datos"
+    }
+  ],
+  "habilidades": [
+    {
+      "denominacion": "datos",
+      "nivel": "BASICO"
+    }
+  ]
+}

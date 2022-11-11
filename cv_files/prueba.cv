@@ -1,0 +1,21 @@
+{
+  "personal": {
+    "identificacion": "",
+    "nombre": "",
+    "apellidos": "",
+    "fechaNacimiento": null,
+    "direccion": "",
+    "codigoPostal": "",
+    "localidad": "",
+    "pais": null,
+    "nacionalidades": []
+  },
+  "contacto": {
+    "telefonos": [],
+    "emails": [],
+    "webs": []
+  },
+  "formacion": [],
+  "experencias": [],
+  "habilidades": []
+}

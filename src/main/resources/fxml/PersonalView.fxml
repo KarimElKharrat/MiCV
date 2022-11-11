@@ -28,7 +28,7 @@
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />
-      <RowConstraints />
+      <RowConstraints vgrow="ALWAYS" />
    </rowConstraints>
    <children>
       <Label text="DNI/NIE/Pasaporte" GridPane.halignment="RIGHT" />
