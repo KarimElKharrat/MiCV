@@ -41,7 +41,7 @@ public class MainController implements Initializable {
 	private CV cv = new CV();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv";
+	private static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv_files";
 	private File file = new File(DEFAULT_PATH + "\\datos.cv");
 	
 	// controllers
@@ -93,9 +93,13 @@ public class MainController implements Initializable {
 		initializeControllers();
 		
 		try {
-			Files.createDirectories(Paths.get(file.getParent()));
-			file.createNewFile();
-			guardar();
+			if(!file.exists()) {
+				Files.createDirectories(Paths.get(file.getParent()));
+				file.createNewFile();
+				guardar();
+			} else {
+				abrir();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -160,17 +164,9 @@ public class MainController implements Initializable {
 			file = selectedFile;
 		}
 		
-		try {
-			cv = GsonHandler.loadCV(file);
-			personalController.loadPersonal(cv.getPersonal());
-			contactoController.loadContacto(cv.getContacto());
-			formacionController.loadFormacion(cv.getFormacion());
-			experienciaController.loadExperiencia(cv.getExperencias());
-			habilidadesController.loadHabilidades(cv.getHabilidades());
-		} catch (Exception e) {
-			System.err.println("No se ha podido, jappens");
-			e.printStackTrace();
-		}
+		abrir();
+		
+		MiCVApp.primaryStage.setTitle("MiCV ~ " + getFile().getAbsolutePath());
     }
 
     @FXML
@@ -183,7 +179,7 @@ public class MainController implements Initializable {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Guardar archivo");
 		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
-		fileChooser.setInitialFileName("datos.cv");
+		fileChooser.setInitialFileName(getFile().getName());
 		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
 		fileChooser.getExtensionFilters().add(jpgFilter);
 		fileChooser.setSelectedExtensionFilter(jpgFilter);
@@ -193,6 +189,7 @@ public class MainController implements Initializable {
     		file = selectedFile;
     		guardar();
     	}
+    	MiCVApp.primaryStage.setTitle("MiCV ~ " + getFile().getAbsolutePath());
     }
 
     @FXML
@@ -223,6 +220,20 @@ public class MainController implements Initializable {
 			guardar();
 	}
 	
+	private void abrir() {
+		try {
+			cv = GsonHandler.loadCV(file);
+			personalController.loadPersonal(cv.getPersonal());
+			contactoController.loadContacto(cv.getContacto());
+			formacionController.loadFormacion(cv.getFormacion());
+			experienciaController.loadExperiencia(cv.getExperencias());
+			habilidadesController.loadHabilidades(cv.getHabilidades());
+		} catch (Exception e) {
+			System.err.println("No se ha podido, jappens");
+			e.printStackTrace();
+		}
+	}
+	
     private void guardar() {
     	
     	try {
@@ -250,6 +261,10 @@ public class MainController implements Initializable {
 
 	public final ListProperty<Nacionalidad> nacionalidadesProperty() {
 		return this.nacionalidades;
+	}
+	
+	public File getFile() {
+		return file;
 	}
 	
 	public final ListProperty<String> paisesProperty() {
