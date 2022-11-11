@@ -41,8 +41,8 @@ public class MainController implements Initializable {
 	private CV cv = new CV();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv_files";
-	private File file = new File(DEFAULT_PATH + "\\datos.cv");
+	public static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv_files";
+	private File file;
 	
 	// controllers
 	
@@ -93,13 +93,7 @@ public class MainController implements Initializable {
 		initializeControllers();
 		
 		try {
-			if(!file.exists()) {
-				Files.createDirectories(Paths.get(file.getParent()));
-				file.createNewFile();
-				guardar();
-			} else {
-				abrir();
-			}
+			Files.createDirectories(Paths.get(DEFAULT_PATH));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -140,9 +134,11 @@ public class MainController implements Initializable {
 	@FXML
 	void onNuevoAction(ActionEvent event) {
 		try {
-			if(file.exists())
-				file.delete();
-			file.createNewFile();
+			if(file != null) {
+				if(file.exists())
+					file.delete();
+				file.createNewFile();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -171,24 +167,18 @@ public class MainController implements Initializable {
 
     @FXML
     void onGuardarAction(ActionEvent event) {
-    	guardar();
+    	if(file != null)
+    		guardar();
+    	else {
+    		guardarComo();
+    	}
     }
 
     @FXML
     void onGuardarComoAction(ActionEvent event) {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Guardar archivo");
-		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
-		fileChooser.setInitialFileName(getFile().getName());
-		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
-		fileChooser.getExtensionFilters().add(jpgFilter);
-		fileChooser.setSelectedExtensionFilter(jpgFilter);
 		
-		File selectedFile = fileChooser.showSaveDialog(MiCVApp.primaryStage);
-    	if(selectedFile != null) {
-    		file = selectedFile;
-    		guardar();
-    	}
+    	guardarComo();
+    	
     	MiCVApp.primaryStage.setTitle("MiCV ~ " + getFile().getAbsolutePath());
     }
 
@@ -208,6 +198,8 @@ public class MainController implements Initializable {
 
 	private void nuevo(int tipo) {
 	
+		file = null;
+		
 		personalController = new PersonalController();
 		contactoController = new ContactoController();
 		formacionController = new FormacionController();
@@ -216,8 +208,6 @@ public class MainController implements Initializable {
 		
 		initializeControllers();
 		
-		if(tipo == 0)
-			guardar();
 	}
 	
 	private void abrir() {
@@ -235,7 +225,6 @@ public class MainController implements Initializable {
 	}
 	
     private void guardar() {
-    	
     	try {
 			file.createNewFile();
 		} catch (IOException e) {
@@ -253,6 +242,22 @@ public class MainController implements Initializable {
 			System.err.println("No se ha podido, jappens");
 			e.printStackTrace();
 		}
+    }
+    
+    private void guardarComo() {
+    	FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Guardar archivo");
+		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
+		fileChooser.setInitialFileName(file != null ? getFile().getName():"");
+		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
+		fileChooser.getExtensionFilters().add(jpgFilter);
+		fileChooser.setSelectedExtensionFilter(jpgFilter);
+		
+		File selectedFile = fileChooser.showSaveDialog(MiCVApp.primaryStage);
+    	if(selectedFile != null) {
+    		file = selectedFile;
+    		guardar();
+    	}
     }
 
 	public BorderPane getView() {

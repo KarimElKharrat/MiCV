@@ -63,7 +63,7 @@ public class MiCVApp extends Application {
 		
 		MiCVApp.primaryStage = primaryStage;
 		
-		primaryStage.setTitle("MiCV ~ " + controller.getFile().getAbsolutePath());
+		primaryStage.setTitle("MiCV ~ " + MainController.DEFAULT_PATH);
 		primaryStage.setScene(new Scene(controller.getView()));
 		primaryStage.getIcons().add(new Image(getClass().getResource("/images/cv64x64.png").toString()));
 		primaryStage.show();
