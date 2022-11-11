@@ -30,6 +30,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class MainController implements Initializable {
 	
@@ -38,7 +39,7 @@ public class MainController implements Initializable {
 	private CV cv = new CV();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private File file = new File("cv_files/datos.cv");
+	private File file = new File("C:\\Users\\Karim\\Documents\\cv\\datos.cv");
 	
 	// controllers
 	
@@ -96,11 +97,6 @@ public class MainController implements Initializable {
 		
 	}
 	
-	@FXML
-	void onNuevoAction(ActionEvent event) {
-		nuevo();
-	}
-	
 	private void initializeControllers() {
 		
 		// tab content
@@ -125,15 +121,31 @@ public class MainController implements Initializable {
 		cv.setPersonal(new Personal());
 		
 	}
+
+	@FXML
+	void onNuevoAction(ActionEvent event) {
+		try {
+			if(file.exists())
+				file.delete();
+			file.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		nuevo(0);
+	}
 	
 	@FXML
     void onAbrirAction(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Abrir archivo");
-    	
+		fileChooser.setInitialDirectory(new File("C:\\Users\\Karim\\Documents\\cv"));
+		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
+		fileChooser.getExtensionFilters().add(jpgFilter);
+		fileChooser.setSelectedExtensionFilter(jpgFilter);
+		
 		File selectedFile = fileChooser.showOpenDialog(MiCVApp.primaryStage);
 		if(selectedFile != null) {
-			nuevo();
+			nuevo(1);
 			file = selectedFile;
 		}
 		
@@ -159,7 +171,12 @@ public class MainController implements Initializable {
     void onGuardarComoAction(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Guardar archivo");
-    	
+		fileChooser.setInitialDirectory(new File("C:\\Users\\Karim\\Documents\\cv"));
+		fileChooser.setInitialFileName("datos.cv");
+		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
+		fileChooser.getExtensionFilters().add(jpgFilter);
+		fileChooser.setSelectedExtensionFilter(jpgFilter);
+		
 		File selectedFile = fileChooser.showSaveDialog(MiCVApp.primaryStage);
     	if(selectedFile != null) {
     		file = selectedFile;
@@ -180,8 +197,29 @@ public class MainController implements Initializable {
     		MiCVApp.primaryStage.close();
     	}
     }
-    
+
+	private void nuevo(int tipo) {
+	
+		personalController = new PersonalController();
+		contactoController = new ContactoController();
+		formacionController = new FormacionController();
+		experienciaController = new ExperienciaController();
+		habilidadesController = new HabilidadesController();
+		
+		initializeControllers();
+		
+		if(tipo == 0)
+			guardar();
+	}
+	
     private void guardar() {
+    	
+    	try {
+			file.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
     	try {
     		cv.setPersonal(personalController.getPersonal());
     		cv.setContacto(contactoController.getContacto());
@@ -194,26 +232,6 @@ public class MainController implements Initializable {
 			e.printStackTrace();
 		}
     }
-
-	private void nuevo() {
-	
-		try {
-			file.delete();
-			file.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		personalController = new PersonalController();
-		contactoController = new ContactoController();
-		formacionController = new FormacionController();
-		experienciaController = new ExperienciaController();
-		habilidadesController = new HabilidadesController();
-		
-		initializeControllers();
-		
-		guardar();
-	}
 
 	public BorderPane getView() {
 		return view;
