@@ -29,7 +29,7 @@
                   <VBox spacing="5.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirTelefonoButton" text="Añadir" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarTelefonoButton" text="Eliminar" />
+                        <Button fx:id="eliminarTelefonoButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarTelefonoButton" text="Eliminar" />
                      </children>
                      <padding>
                         <Insets left="5.0" />
@@ -59,7 +59,7 @@
                   <VBox spacing="5.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirEmailButton" text="Añadir" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarEmailButton" text="Eliminar" />
+                        <Button fx:id="eliminarEmailButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarEmailButton" text="Eliminar" />
                      </children>
                      <padding>
                         <Insets left="5.0" />
@@ -89,7 +89,7 @@
                   <VBox spacing="5.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirWebButton" text="Añadir" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarWebButton" text="Eliminar" />
+                        <Button fx:id="eliminarWebButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarWebButton" text="Eliminar" />
                      </children>
                      <padding>
                         <Insets left="5.0" />

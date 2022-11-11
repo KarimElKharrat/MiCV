@@ -10,6 +10,11 @@ public class Conocimiento {
 	private StringProperty denominacion = new SimpleStringProperty();
 	private ObjectProperty<Nivel> nivel = new SimpleObjectProperty<>();
 
+	public Conocimiento(String denominacion, Nivel nivel) {
+		setDenominacion(denominacion);
+		setNivel(nivel);
+	}
+	
 	public final StringProperty denominacionProperty() {
 		return this.denominacion;
 	}
@@ -33,5 +38,14 @@ public class Conocimiento {
 	public final void setNivel(final Nivel nivel) {
 		this.nivelProperty().set(nivel);
 	}
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Conocimiento) {
+			Conocimiento nuevo = (Conocimiento) obj;
+			return this.getDenominacion().equals(nuevo.getDenominacion()) &&
+					this.getNivel().equals(nuevo.getNivel());
+		}
+		return super.equals(obj);
+	}
 }

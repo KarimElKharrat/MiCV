@@ -14,6 +14,13 @@ public class Titulo {
 	private StringProperty denominacion = new SimpleStringProperty();
 	private StringProperty organizador = new SimpleStringProperty();
 
+	public Titulo(LocalDate desde, LocalDate hasta, String denominacion, String organizador) {
+		setDesde(desde);
+		setHasta(hasta);
+		setDenominacion(denominacion);
+		setOrganizador(organizador);
+	}	
+	
 	public final ObjectProperty<LocalDate> desdeProperty() {
 		return this.desde;
 	}
@@ -60,6 +67,18 @@ public class Titulo {
 
 	public final void setOrganizador(final String organizador) {
 		this.organizadorProperty().set(organizador);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Titulo) {
+			Titulo nuevo = (Titulo) obj;
+			return this.getDenominacion().equals(nuevo.getDenominacion()) &&
+					this.getOrganizador().equals(nuevo.getOrganizador()) &&
+					this.getDesde().isEqual(nuevo.getDesde()) &&
+					this.getHasta().isEqual(nuevo.getHasta());
+		}
+		return super.equals(obj);
 	}
 
 }

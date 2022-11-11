@@ -22,5 +22,15 @@ public class Email {
 	public final void setDireccion(final String direccion) {
 		this.direccionProperty().set(direccion);
 	}
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Email) {
+			Email nuevo = (Email) obj;
+			return nuevo.getDireccion().equals(this.getDireccion());
+		}
+		return super.equals(obj);
+	}
 
 }

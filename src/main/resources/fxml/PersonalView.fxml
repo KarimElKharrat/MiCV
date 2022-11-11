@@ -13,8 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<GridPane fx:id="view" alignment="CENTER" hgap="5.0" vgap="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17">
+<GridPane fx:id="view" alignment="CENTER" hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
       <ColumnConstraints halignment="RIGHT" />
       <ColumnConstraints hgrow="ALWAYS" />
@@ -53,7 +52,7 @@
       <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="8" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
          <children>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirAction" text="+" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onQuitarAction" text="-" />
+            <Button fx:id="quitarButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onQuitarAction" text="-" />
          </children>
       </VBox>
    </children>

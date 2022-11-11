@@ -11,10 +11,10 @@
    <center>
       <TableView fx:id="formacionTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn prefWidth="75.0" text="Desde" />
-          <TableColumn prefWidth="75.0" text="Hasta" />
-            <TableColumn minWidth="-Infinity" text="Denominación" />
-            <TableColumn minWidth="-Infinity" text="Organización" />
+          <TableColumn fx:id="desdeColumn" prefWidth="75.0" text="Desde" />
+          <TableColumn fx:id="hastaColumn" prefWidth="75.0" text="Hasta" />
+            <TableColumn fx:id="denominacionColumn" minWidth="-Infinity" text="Denominación" />
+            <TableColumn fx:id="organizacionColumn" minWidth="-Infinity" text="Organización" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="5.0" />
@@ -28,7 +28,7 @@
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirAction" text="Añadir" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarAction" text="Eliminar" />
+            <Button fx:id="eliminarButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarAction" text="Eliminar" />
          </children>
          <padding>
             <Insets left="5.0" />

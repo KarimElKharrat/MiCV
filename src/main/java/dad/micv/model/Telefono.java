@@ -38,5 +38,15 @@ public class Telefono {
 	public final void setTipo(final TipoTelefono tipo) {
 		this.tipoProperty().set(tipo);
 	}
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Telefono) {
+			Telefono nuevo = (Telefono) obj;
+			return nuevo.getTipo().equals(this.getTipo()) && nuevo.getTelefono().equals(this.getTelefono());
+		}
+		return super.equals(obj);
+	}
 
 }

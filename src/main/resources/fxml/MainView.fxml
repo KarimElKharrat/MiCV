@@ -17,7 +17,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
-              <MenuItem fx:id="nuevoItem" mnemonicParsing="false" text="Nuevo">
+              <MenuItem mnemonicParsing="false" onAction="#onNuevoAction" text="Nuevo">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -25,7 +25,7 @@
                         <ImageView fx:id="nuevoImage" pickOnBounds="true" preserveRatio="true" />
                      </graphic>
                   </MenuItem>
-                  <MenuItem fx:id="abrirItem" mnemonicParsing="false" text="Abrir...">
+                  <MenuItem mnemonicParsing="false" onAction="#onAbrirAction" text="Abrir...">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -33,7 +33,7 @@
                         <ImageView fx:id="abrirImage" pickOnBounds="true" preserveRatio="true" />
                      </graphic>
                   </MenuItem>
-                  <MenuItem fx:id="guardarItem" mnemonicParsing="false" text="Guardar">
+                  <MenuItem mnemonicParsing="false" onAction="#onGuardarAction" text="Guardar">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -41,9 +41,9 @@
                         <ImageView fx:id="guardarImage" pickOnBounds="true" preserveRatio="true" />
                      </graphic>
                   </MenuItem>
-                  <MenuItem fx:id="guardarcomoItem" mnemonicParsing="false" text="Guardar como..." />
+                  <MenuItem mnemonicParsing="false" onAction="#onGuardarComoAction" text="Guardar como..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="salirItem" mnemonicParsing="false" text="Salir">
+                  <MenuItem mnemonicParsing="false" onAction="#onSalirAction" text="Salir">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

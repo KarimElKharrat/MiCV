@@ -13,6 +13,13 @@ public class Experiencia {
 	private ObjectProperty<LocalDate> hasta = new SimpleObjectProperty<>();
 	private StringProperty denominacion = new SimpleStringProperty();
 	private StringProperty empleador = new SimpleStringProperty();
+	
+	public Experiencia(LocalDate desde, LocalDate hasta, String denominacion, String empleador) {
+		setDesde(desde);
+		setHasta(hasta);
+		setDenominacion(denominacion);
+		setEmpleador(empleador);
+	}
 
 	public final ObjectProperty<LocalDate> desdeProperty() {
 		return this.desde;
@@ -60,6 +67,18 @@ public class Experiencia {
 
 	public final void setEmpleador(final String empleador) {
 		this.empleadorProperty().set(empleador);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Experiencia) {
+			Experiencia nuevo = (Experiencia) obj;
+			return this.getDenominacion().equals(nuevo.getDenominacion()) &&
+					this.getEmpleador().equals(nuevo.getEmpleador()) &&
+					this.getDesde().isEqual(nuevo.getDesde()) &&
+					this.getHasta().isEqual(nuevo.getHasta());
+		}
+		return super.equals(obj);
 	}
 
 }

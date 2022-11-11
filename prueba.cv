@@ -1,0 +1,113 @@
+{
+  "personal": {
+    "identificacion": "fechaNacimiento",
+    "nombre": "fechaNacimiento",
+    "apellidos": "fechaNacimiento",
+    "fechaNacimiento": {
+      "year": 2022,
+      "month": 11,
+      "day": 5
+    },
+    "direccion": "fechaNacimientofechaNacimientofechaNacimientofechaNacimiento",
+    "codigoPostal": "fechaNacimiento",
+    "localidad": "fechaNacimiento",
+    "pais": "Angola",
+    "nacionalidades": [
+      {
+        "denominacion": "﻿afgano"
+      },
+      {
+        "denominacion": "alemán"
+      }
+    ]
+  },
+  "contacto": {
+    "telefonos": [
+      {
+        "telefono": "123",
+        "tipo": "DOMICILIO"
+      }
+    ],
+    "emails": [
+      {
+        "direccion": "123"
+      }
+    ],
+    "webs": [
+      {
+        "url": "http://123"
+      }
+    ]
+  },
+  "formacion": [
+    {
+      "desde": {
+        "year": 2022,
+        "month": 11,
+        "day": 2
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 3
+      },
+      "denominacion": "123",
+      "organizador": "123"
+    },
+    {
+      "desde": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 18
+      },
+      "denominacion": "aaaa",
+      "organizador": "aaaa"
+    }
+  ],
+  "experencias": [
+    {
+      "desde": {
+        "year": 2022,
+        "month": 11,
+        "day": 2
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 3
+      },
+      "denominacion": "123",
+      "empleador": "123"
+    },
+    {
+      "desde": {
+        "year": 2022,
+        "month": 10,
+        "day": 31
+      },
+      "hasta": {
+        "year": 2022,
+        "month": 11,
+        "day": 1
+      },
+      "denominacion": "aaa",
+      "empleador": "aaa"
+    }
+  ],
+  "habilidades": [
+    {
+      "denominacion": "123",
+      "nivel": "BASICO"
+    },
+    {
+      "certificacion": "xd",
+      "denominacion": "ingles",
+      "nivel": "AVANZADO"
+    }
+  ]
+}

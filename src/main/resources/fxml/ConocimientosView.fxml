@@ -13,7 +13,7 @@
          <children>
             <Button maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAñadirConocimientoAction" text="Añadir conocimiento" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAñadirIdiomaAction" text="Añadir idioma" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarAction" text="Eliminar" />
+            <Button fx:id="eliminarButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminarAction" text="Eliminar" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -23,10 +23,10 @@
          </padding></VBox>
    </right>
    <center>
-      <TableView fx:id="conocimientosTable" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="conocimientosTable" editable="true" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn text="Denominción" />
-          <TableColumn prefWidth="75.0" text="Nivel" />
+          <TableColumn fx:id="denominacionColumn" text="Denominción" />
+          <TableColumn fx:id="nivelColumn" prefWidth="75.0" text="Nivel" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="5.0" />

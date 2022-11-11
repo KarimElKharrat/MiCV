@@ -15,6 +15,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -27,12 +31,14 @@ public class PersonalController implements Initializable {
 
 	// model
 	
-	private Personal personal = new Personal();
-	
 	private ListProperty<Nacionalidad> nacionalidadesTotales = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private Personal personal = new Personal();
 	
 	// view
+	
+	@FXML
+    private Button quitarButton;
 	
 	@FXML
     private TextField dniText;
@@ -86,19 +92,22 @@ public class PersonalController implements Initializable {
 		
 		paisesCombo.itemsProperty().bind(paises);
 		
+		quitarButton.disableProperty().bind(nacionalidadesList.getSelectionModel().selectedItemProperty().isNull());
+		
 	}
 	
 	@FXML
 	void onAñadirAction(ActionEvent event) {
 		
-		ChoiceDialog<Nacionalidad> dialog = new ChoiceDialog<>(); //TODO meter las nacionalidades
+		ChoiceDialog<Nacionalidad> dialog = new ChoiceDialog<>(nacionalidadesTotales.get(0), nacionalidadesTotales); //TODO meter las nacionalidades
 		dialog.initOwner(MiCVApp.primaryStage);
 		dialog.setTitle("Nueva nacionalidad");
 		dialog.setHeaderText("Añadir nacionalidad");
-		dialog.getItems().addAll(nacionalidadesTotales);
 		
 		Optional<Nacionalidad> nuevaNacionalidad = dialog.showAndWait();
-		if(nuevaNacionalidad.isPresent() && !nuevaNacionalidad.get().toString().isBlank() && !personal.getNacionalidades().contains(nuevaNacionalidad.get())) {
+		if(nuevaNacionalidad.isPresent() && 
+				!nuevaNacionalidad.get().toString().isBlank() && 
+				!personal.getNacionalidades().contains(nuevaNacionalidad.get())) {
 			personal.getNacionalidades().add(nuevaNacionalidad.get());
 		}
 		
@@ -106,7 +115,16 @@ public class PersonalController implements Initializable {
 	
 	@FXML
 	void onQuitarAction(ActionEvent event) {
-		personal.getNacionalidades().remove(nacionalidadesList.getSelectionModel().getSelectedItem());
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+    	alert.setTitle("Eliminar nacionalidad");
+    	alert.setHeaderText("Está a punto de eliminar una nacionalidad");
+    	alert.setContentText("¿Quiere continuar?");
+    	alert.initOwner(MiCVApp.primaryStage);
+    	
+    	Optional<ButtonType> result = alert.showAndWait();
+    	if (result.get() == ButtonType.OK){
+    		personal.getNacionalidades().remove(nacionalidadesList.getSelectionModel().getSelectedItem());
+    	}
 	}
 	
 	public final ListProperty<Nacionalidad> nacionalidadesProperty() {
@@ -115,6 +133,22 @@ public class PersonalController implements Initializable {
 	
 	public final ListProperty<String> paisesProperty() {
 		return this.paises;
+	}
+	
+	public Personal getPersonal() {
+		return personal;
+	}
+	
+	public void loadPersonal(Personal personal) {
+		dniText.setText(personal.getIdentificacion());
+		nombreText.setText(personal.getNombre());
+		apellidosText.setText(personal.getApellidos());
+		nacimientoDate.setValue(personal.getFechaNacimiento());
+		direccionText.setText(personal.getDireccion());
+		codPostalText.setText(personal.getCodigoPostal());
+		localidadText.setText(personal.getLocalidad());
+		paisesCombo.getSelectionModel().select(personal.getPais());;
+		nacionalidadesList.getItems().addAll(personal.getNacionalidades());
 	}
 	
 	public GridPane getView() {

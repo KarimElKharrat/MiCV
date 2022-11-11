@@ -22,5 +22,14 @@ public class Web {
 	public final void setUrl(final String url) {
 		this.urlProperty().set(url);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Web) {
+			Web nuevo = (Web) obj;
+			return nuevo.getUrl().equals(this.getUrl());
+		}
+		return super.equals(obj);
+	}
 
 }

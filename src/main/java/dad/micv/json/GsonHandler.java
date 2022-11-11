@@ -15,10 +15,8 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import dad.micv.model.CV;
-import dad.micv.model.Nacionalidad;
-import dad.micv.model.Personal;
 
-public class MiCVGsonSample {
+public class GsonHandler {
 
 	public static void main(String[] args) throws Exception {
 		
@@ -27,35 +25,25 @@ public class MiCVGsonSample {
 		
 	}
 	
-	private static void loadCV() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	public static CV loadCV(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		Gson gson = FxGson.fullBuilder()
 				.setPrettyPrinting()
 				.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 				.create();
 		
-		CV cv = gson.fromJson(new FileReader("cnorris.cv"), CV.class);
+		CV cv = gson.fromJson(new FileReader(path), CV.class);
 		System.out.println(cv.getPersonal().getNombre() + " " + cv.getPersonal().getApellidos());
+		return cv;
 	}
 
-	private static void saveCV() throws IOException {
-		Personal personal = new Personal();
-		personal.setIdentificacion("12345678Z");
-		personal.setNombre("Chuck");
-		personal.setApellidos("Norris");
-		personal.setFechaNacimiento(LocalDate.of(1956, 11, 22));
-		personal.getNacionalidades().add(new Nacionalidad("Española"));
-		personal.getNacionalidades().add(new Nacionalidad("Americana"));
-		
-		CV cv = new CV();
-		cv.setPersonal(personal);
-		
+	public static void saveCV(CV cv, String path) throws IOException {
 		Gson gson = FxGson.fullBuilder()
 				.setPrettyPrinting()
 				.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 				.create();
 		
 		String json = gson.toJson(cv, CV.class);
-		Files.writeString(new File("cnorris.cv").toPath(), json, StandardCharsets.UTF_8);
+		Files.writeString(new File(path).toPath(), json, StandardCharsets.UTF_8);
 	}
 	
 	
