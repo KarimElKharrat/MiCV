@@ -41,7 +41,7 @@ public class MainController implements Initializable {
 	private CV cv = new CV();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final String DEFAULT_PATH = System.getProperty("user.home") + "\\Documents\\cv_files";
+	public static final String DEFAULT_PATH = "cv_files";
 	private File file;
 	
 	// controllers
