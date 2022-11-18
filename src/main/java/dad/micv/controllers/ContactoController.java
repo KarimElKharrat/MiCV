@@ -6,36 +6,26 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import dad.micv.MiCVApp;
+import dad.micv.dialogs.NuevoTelefonoDialog;
 import dad.micv.model.Contacto;
 import dad.micv.model.Email;
 import dad.micv.model.Telefono;
 import dad.micv.model.TipoTelefono;
 import dad.micv.model.Web;
-import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import javafx.util.Pair;
 
 public class ContactoController implements Initializable {
 
@@ -104,73 +94,18 @@ public class ContactoController implements Initializable {
 	
 	@FXML
 	void onAñadirTelefonoButton(ActionEvent event) {
-		Dialog<Pair<String, TipoTelefono>> dialog = new Dialog<>();
-		dialog.setTitle("Nuevo teléfono");
-		dialog.setHeaderText("Introduzca el nuevo número de teléfono.");
-		dialog.initOwner(MiCVApp.primaryStage);
-		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(this.getClass().getResource("/images/cv64x64.png").toString()));
 		
+		NuevoTelefonoDialog ntd = new NuevoTelefonoDialog();
 		
-		ButtonType loginButtonType = new ButtonType("Añadir", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-
-		// Create the username and password labels and fields.
-		GridPane grid = new GridPane();
-		grid.setHgap(10);
-		grid.setVgap(10);
-		grid.setPadding(new Insets(10,10,10,10));
-		grid.setAlignment(Pos.CENTER_LEFT);
-
-		TextField telefono = new TextField();
-		telefono.setPromptText("Número de Teléfono");
-		ComboBox<TipoTelefono> tipoTelefono = new ComboBox<>();
-		tipoTelefono.setPromptText("Seleccione un tipo");
-		
-		tipoTelefono.getItems().addAll(TipoTelefono.DOMICILIO, TipoTelefono.MOVIL);
-		
-		grid.add(new Label("Teléfono:"), 0, 0);
-		grid.add(telefono, 1, 0);
-		grid.add(new Label("Tipo:"), 0, 1);
-		grid.add(tipoTelefono, 1, 1);
-
-		// Enable/Disable login button depending on whether a username was entered.
-		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-		loginButton.setDisable(true);
-
-		// Do some validation (using the Java 8 lambda syntax).
-		telefono.textProperty().addListener((observable, oldValue, newValue) -> {
-		    loginButton.setDisable(newValue.trim().isEmpty());
-		});
-
-		dialog.getDialogPane().setContent(grid);
-
-		// Request focus on the username field by default.
-		Platform.runLater(() -> telefono.requestFocus());
-
-		// Convert the result to a username-password-pair when the login button is clicked.
-		dialog.setResultConverter(dialogButton -> {
-		    if (dialogButton == loginButtonType) {
-		        return new Pair<>(telefono.getText(), tipoTelefono.getSelectionModel().getSelectedItem());
-		    }
-		    return null;
-		});
-		
-		Optional<Pair<String, TipoTelefono>> result = dialog.showAndWait();
-		if (result.isPresent() && !result.get().getKey().isBlank() && !(result.get().getValue() == null) && !contacto.getTelefonos().contains(new Telefono(result.get().getKey(), result.get().getValue()))){
-    		contacto.getTelefonos().add(new Telefono(result.get().getKey(), result.get().getValue()));
+		Optional<Telefono> result = ntd.showAndWait();
+		if (result.isPresent() && !result.get().getTelefono().isBlank() && !(result.get() == null) && !contacto.getTelefonos().contains(result.get())){
+    		contacto.getTelefonos().add(result.get());
     	}
 	}
 	
 	@FXML
     void onAñadirEmailButton(ActionEvent event) {
-		TextInputDialog dialog = new TextInputDialog();
-    	dialog.setTitle("Nuevo e-mail");
-    	dialog.setHeaderText("Crear una nueva dirección de correo.");
-    	dialog.setContentText("E-mail:");
-    	dialog.initOwner(MiCVApp.primaryStage);
-    	Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-    	stage.getIcons().add(new Image(this.getClass().getResource("/images/cv64x64.png").toString()));
+		TextInputDialog dialog = crearTextInputDialog("", "Nuevo e-mail", "Crear una nueva dirección de correo.", "E-mail:");
 
     	// Traditional way to get the response value.
     	Optional<String> result = dialog.showAndWait();
@@ -181,13 +116,7 @@ public class ContactoController implements Initializable {
 
     @FXML
     void onAñadirWebButton(ActionEvent event) {
-		TextInputDialog dialog = new TextInputDialog("http://");
-    	dialog.setTitle("Nuevo web");
-    	dialog.setHeaderText("Crear una nueva dirección web.");
-    	dialog.setContentText("URL:");
-    	dialog.initOwner(MiCVApp.primaryStage);
-    	Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-    	stage.getIcons().add(new Image(this.getClass().getResource("/images/cv64x64.png").toString()));
+    	TextInputDialog dialog = crearTextInputDialog("http://", "Nuevo web", "Crear una nueva dirección web.", "URL:"); 
 
     	// Traditional way to get the response value.
     	Optional<String> result = dialog.showAndWait();
@@ -212,6 +141,21 @@ public class ContactoController implements Initializable {
     void onEliminarWebButton(ActionEvent event) {
     	if(createConfirmationDialog("web"))
     		contacto.getWebs().remove(webTable.getSelectionModel().getSelectedItem());
+    }
+    
+    private TextInputDialog crearTextInputDialog(String prompt, String title, String header, String content) {
+    	TextInputDialog dialog = new TextInputDialog(prompt);
+    	dialog.setTitle(title);
+    	dialog.setHeaderText(header);
+    	dialog.setContentText(content);
+    	dialog.initOwner(MiCVApp.primaryStage);
+    	
+    	StringProperty contentTextField = new SimpleStringProperty();
+    	contentTextField.bind(dialog.getEditor().textProperty());
+    	
+    	dialog.getDialogPane().lookupButton(ButtonType.OK).disableProperty().bind(contentTextField.isEmpty());
+    	
+    	return dialog;
     }
     
     boolean createConfirmationDialog(String texto) {

@@ -7,6 +7,8 @@ public class Idioma extends Conocimiento {
 
 	private StringProperty certificacion = new SimpleStringProperty();
 	
+	public Idioma() { super(); }
+	
 	public Idioma(String denominacion, Nivel nivel) {
 		super(denominacion, nivel);
 	}

@@ -10,6 +10,8 @@ public class Telefono {
 	private StringProperty telefono = new SimpleStringProperty();
 	private ObjectProperty<TipoTelefono> tipo = new SimpleObjectProperty<>();
 	
+	public Telefono() {}
+	
 	public Telefono(String telefono, TipoTelefono tipo) {
 		setTelefono(telefono);
 		setTipo(tipo);

@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import dad.micv.MiCVApp;
+import dad.micv.dialogs.NuevoTituloDialog;
 import dad.micv.model.Titulo;
-import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -17,13 +17,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -34,10 +31,6 @@ public class FormacionController implements Initializable {
 	
 	private ListProperty<Titulo> formacion = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-	// controllers
-	
-	private AñadirTituloController añadirTituloController;
-	
 	// view
 	
 	@FXML
@@ -88,54 +81,10 @@ public class FormacionController implements Initializable {
 
 	@FXML
     void onAñadirAction(ActionEvent event) {
-		añadirTituloController = new AñadirTituloController();
-
-		Dialog<Titulo> dialog = new Dialog<>();
-		dialog.setTitle("Añadir título");
-		dialog.setHeaderText("Añade un nuevo título.");
-		dialog.initOwner(MiCVApp.primaryStage);
-		
-		ButtonType loginButtonType = new ButtonType("Crear", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-
-		dialog.getDialogPane().setContent(añadirTituloController.getView());
-
-		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-		loginButton.setDisable(true);
-		
-		añadirTituloController.getDenominacionText().textProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		añadirTituloController.getOrganizadorText().textProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		añadirTituloController.getDesdeDate().valueProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		añadirTituloController.getHastaDate().valueProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		
-		Platform.runLater(() -> añadirTituloController.getDenominacionText());
-
-		dialog.setResultConverter(dialogButton -> {
-		    if (dialogButton == loginButtonType) {
-		        return new Titulo(
-	        		añadirTituloController.getDesdeDate().getValue(), 
-	        		añadirTituloController.getHastaDate().getValue(),
-	        		añadirTituloController.getDenominacionText().getText(),
-	        		añadirTituloController.getOrganizadorText().getText()
-        		);
-		    }
-		    return null;
-		});
+		NuevoTituloDialog dialog = new NuevoTituloDialog();
 
 		Optional<Titulo> result = dialog.showAndWait();
-		if(result.isPresent() && !result.get().getDenominacion().isBlank() && 
-				!result.get().getOrganizador().isBlank() && 
-				!(result.get().getDesde() == null) && 
-				!(result.get().getHasta() == null) && 
-				!formacion.contains(result.get())) {
+		if(result.isPresent() && !formacion.contains(result.get())) {
 			formacion.add(result.get());
 		}
 
@@ -153,13 +102,6 @@ public class FormacionController implements Initializable {
     	if (result.get() == ButtonType.OK){
     		formacion.remove(formacionTable.getSelectionModel().getSelectedItem());
     	}
-    }
-    
-    boolean disableAñadirButton() {
-    	return añadirTituloController.getDenominacionText().getText().trim().isEmpty() || 
-			añadirTituloController.getOrganizadorText().getText().trim().isEmpty() ||
-			(añadirTituloController.getDesdeDate().getValue() == null) ||
-			(añadirTituloController.getHastaDate().getValue() == null);
     }
     
     public void loadFormacion(ObservableList<Titulo> formacion) {

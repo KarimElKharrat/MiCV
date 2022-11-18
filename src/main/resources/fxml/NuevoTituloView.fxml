@@ -25,20 +25,17 @@
         </rowConstraints>
          <children>
             <Label text="Denominación" />
-            <Label text="Empleador" GridPane.rowIndex="1" />
+            <Label text="Organizador" GridPane.rowIndex="1" />
             <Label text="Desde" GridPane.rowIndex="2" />
             <Label text="Hasta" GridPane.rowIndex="3" />
             <TextField fx:id="denominacionText" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-            <TextField fx:id="empleadorText" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <TextField fx:id="organizadorText" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <DatePicker fx:id="desdeDate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <DatePicker fx:id="hastaDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" />
          </BorderPane.margin>
-         <padding>
-            <Insets bottom="20.0" />
-         </padding>
       </GridPane>
    </center>
    <padding>

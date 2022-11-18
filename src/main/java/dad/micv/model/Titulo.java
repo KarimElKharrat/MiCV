@@ -14,6 +14,8 @@ public class Titulo {
 	private StringProperty denominacion = new SimpleStringProperty();
 	private StringProperty organizador = new SimpleStringProperty();
 
+	public Titulo() {}
+	
 	public Titulo(LocalDate desde, LocalDate hasta, String denominacion, String organizador) {
 		setDesde(desde);
 		setHasta(hasta);

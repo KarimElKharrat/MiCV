@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import dad.micv.MiCVApp;
+import dad.micv.dialogs.NuevaExperienciaDialog;
 import dad.micv.model.Experiencia;
-import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -17,13 +17,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -33,10 +30,6 @@ public class ExperienciaController implements Initializable {
 	// model
 	
 	private ListProperty<Experiencia> experencias = new SimpleListProperty<>(FXCollections.observableArrayList());
-	
-	// controllers
-	
-	AñadirExperienciaController añadirExperienciaController;
 	
 	// view
 	
@@ -87,55 +80,10 @@ public class ExperienciaController implements Initializable {
 
     @FXML
     void onAñadirAction(ActionEvent event) {
-
-    	añadirExperienciaController = new AñadirExperienciaController();
-
-		Dialog<Experiencia> dialog = new Dialog<>();
-		dialog.setTitle("Añadir experiencia");
-		dialog.setHeaderText("Añade una nueva experiencia.");
-		dialog.initOwner(MiCVApp.primaryStage);
-		
-		ButtonType loginButtonType = new ButtonType("Crear", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-
-		dialog.getDialogPane().setContent(añadirExperienciaController.getView());
-
-		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-		loginButton.setDisable(true);
-		
-		añadirExperienciaController.getDenominacionText().textProperty().addListener((o, ov, nv) -> {
-		    loginButton.setDisable(disableAñadirButton());
-		});
-		añadirExperienciaController.getEmpleadorText().textProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		añadirExperienciaController.getDesdeDate().valueProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		añadirExperienciaController.getHastaDate().valueProperty().addListener((o, ov, nv) -> {
-			loginButton.setDisable(disableAñadirButton());
-		});
-		
-		Platform.runLater(() -> añadirExperienciaController.getDenominacionText());
-
-		dialog.setResultConverter(dialogButton -> {
-		    if (dialogButton == loginButtonType) {
-		        return new Experiencia(
-	        		añadirExperienciaController.getDesdeDate().getValue(), 
-	        		añadirExperienciaController.getHastaDate().getValue(),
-	        		añadirExperienciaController.getDenominacionText().getText(),
-	        		añadirExperienciaController.getEmpleadorText().getText()
-        		);
-		    }
-		    return null;
-		});
-
+    	NuevaExperienciaDialog dialog = new NuevaExperienciaDialog();
+    	
 		Optional<Experiencia> result = dialog.showAndWait();
-		if(result.isPresent() && !result.get().getDenominacion().isBlank() && 
-				!result.get().getEmpleador().isBlank() && 
-				!(result.get().getDesde() == null) && 
-				!(result.get().getHasta() == null) && 
-				!experencias.contains(result.get())) {
+		if(result.isPresent() && !experencias.contains(result.get())) {
 			experencias.add(result.get());
 		}
     }
@@ -152,13 +100,6 @@ public class ExperienciaController implements Initializable {
     	if (result.get() == ButtonType.OK){
     		experencias.remove(experienciaTable.getSelectionModel().getSelectedItem());
     	}
-    }
-    
-    private boolean disableAñadirButton() {
-    	return añadirExperienciaController.getDenominacionText().getText().trim().isEmpty() || 
-			añadirExperienciaController.getEmpleadorText().getText().trim().isEmpty() ||
-			(añadirExperienciaController.getDesdeDate().getValue() == null) ||
-			(añadirExperienciaController.getHastaDate().getValue() == null);
     }
     
     public void loadExperiencia(ObservableList<Experiencia> experiencias) {

@@ -14,6 +14,8 @@ public class Experiencia {
 	private StringProperty denominacion = new SimpleStringProperty();
 	private StringProperty empleador = new SimpleStringProperty();
 	
+	public Experiencia() {}
+	
 	public Experiencia(LocalDate desde, LocalDate hasta, String denominacion, String empleador) {
 		setDesde(desde);
 		setHasta(hasta);

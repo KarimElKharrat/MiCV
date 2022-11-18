@@ -10,6 +10,8 @@ public class Conocimiento {
 	private StringProperty denominacion = new SimpleStringProperty();
 	private ObjectProperty<Nivel> nivel = new SimpleObjectProperty<>();
 
+	public Conocimiento() {}
+	
 	public Conocimiento(String denominacion, Nivel nivel) {
 		setDenominacion(denominacion);
 		setNivel(nivel);

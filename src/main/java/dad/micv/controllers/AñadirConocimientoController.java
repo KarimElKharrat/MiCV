@@ -18,9 +18,9 @@ public class AñadirConocimientoController implements Initializable {
 
 	@FXML
     private Label certificacionLabel;
+	
     @FXML
     private TextField certificacionText;
-    
     @FXML
     private TextField denominacionText;
 
