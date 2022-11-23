@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import dad.micv.controllers.MainController;
 import dad.micv.model.Nacionalidad;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -63,10 +64,19 @@ public class MiCVApp extends Application {
 		
 		MiCVApp.primaryStage = primaryStage;
 		
-		primaryStage.setTitle("MiCV ~ " + MainController.DEFAULT_PATH);
 		primaryStage.setScene(new Scene(controller.getView()));
 		primaryStage.getIcons().add(new Image(getClass().getResource("/images/cv64x64.png").toString()));
 		primaryStage.show();
+		
+		MiCVApp.primaryStage.titleProperty().bind(
+				Bindings.concat(
+						"MiCV ~ ",
+						Bindings
+							.when(controller.fileProperty().isNotNull())
+							.then(controller.fileProperty().asString())
+							.otherwise(MainController.DEFAULT_PATH)
+				)
+			);
 		
 		MiCVApp.primaryStage.setOnCloseRequest(e -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
