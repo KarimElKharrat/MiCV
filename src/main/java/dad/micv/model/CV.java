@@ -9,8 +9,8 @@ import javafx.collections.ObservableList;
 
 public class CV {
 
-	private ObjectProperty<Personal> personal = new SimpleObjectProperty<>();
-	private ObjectProperty<Contacto> contacto = new SimpleObjectProperty<>();
+	private ObjectProperty<Personal> personal = new SimpleObjectProperty<>(new Personal());
+	private ObjectProperty<Contacto> contacto = new SimpleObjectProperty<>(new Contacto());
 
 	private ListProperty<Titulo> formacion = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<Experiencia> experencias = new SimpleListProperty<>(FXCollections.observableArrayList());
