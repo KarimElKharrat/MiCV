@@ -11,14 +11,12 @@ import java.util.ResourceBundle;
 import dad.micv.MiCVApp;
 import dad.micv.json.GsonHandler;
 import dad.micv.model.CV;
-import dad.micv.model.Conocimiento;
-import dad.micv.model.Contacto;
-import dad.micv.model.Experiencia;
 import dad.micv.model.Nacionalidad;
-import dad.micv.model.Personal;
-import dad.micv.model.Titulo;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,39 +26,39 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class MainController implements Initializable {
-	
+
+	public static final String DEFAULT_PATH = "cv_files";
+
 	// model
-	
-	private CV cv = new CV();
+
+	private ObjectProperty<CV> cv = new SimpleObjectProperty<>();
 	private ListProperty<Nacionalidad> nacionalidades = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private ListProperty<String> paises = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final String DEFAULT_PATH = "cv_files";
-	private File file;
-	
+	private ObjectProperty<File> file = new SimpleObjectProperty<>();
+
 	// controllers
-	
+
 	private PersonalController personalController = new PersonalController();
 	private ContactoController contactoController = new ContactoController();
 	private FormacionController formacionController = new FormacionController();
 	private ExperienciaController experienciaController = new ExperienciaController();
 	private HabilidadesController habilidadesController = new HabilidadesController();
-	
+
 	// view
-	
+
 	@FXML
-    private ImageView abrirImage;
+	private ImageView abrirImage;
 	@FXML
 	private ImageView nuevoImage;
 	@FXML
-    private ImageView guardarImage;
-	
+	private ImageView guardarImage;
+
 	@FXML
 	private Tab personalTab;
 	@FXML
@@ -71,7 +69,7 @@ public class MainController implements Initializable {
 	private Tab experienciaTab;
 	@FXML
 	private Tab conocimientosTab;
-	
+
 	@FXML
 	private BorderPane view;
 
@@ -89,167 +87,163 @@ public class MainController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		// initialize controllers
-		
+
 		initializeControllers();
-		
+
 		try {
 			Files.createDirectories(Paths.get(DEFAULT_PATH));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// load data
-		
-		nuevoImage.setImage(new Image(getClass().getResource("/images/nuevo.gif").toString()));
-		abrirImage.setImage(new Image(getClass().getResource("/images/abrir.gif").toString()));
-		guardarImage.setImage(new Image(getClass().getResource("/images/guardar.gif").toString()));
-		
+
+		cv.addListener(this::onCVChanged);
+		cv.set(new CV());
+
 	}
-	
+
 	private void initializeControllers() {
-		
+
 		// tab content
-		
+
 		personalTab.setContent(personalController.getView());
 		contactoTab.setContent(contactoController.getView());
 		formacionTab.setContent(formacionController.getView());
 		experienciaTab.setContent(experienciaController.getView());
 		conocimientosTab.setContent(habilidadesController.getView());
-		
+
 		// bindings
-		
+
 		personalController.nacionalidadesProperty().bind(nacionalidades);
 		personalController.paisesProperty().bind(paises);
-		
-		// reset data
-		
-		cv.setContacto(new Contacto());
-		cv.setExperencias(new SimpleListProperty<Experiencia>(FXCollections.observableArrayList()));
-		cv.setFormacion(new SimpleListProperty<Titulo>(FXCollections.observableArrayList()));
-		cv.setHabilidades(new SimpleListProperty<Conocimiento>(FXCollections.observableArrayList()));
-		cv.setPersonal(new Personal());
-		
+
+	}
+
+	private void onCVChanged(ObservableValue<? extends CV> o, CV ov, CV nv) {
+
+		if (ov != null) {
+
+			personalController.personalProperty().unbind();
+			contactoController.contactoProperty().unbind();
+			formacionController.formacionProperty().unbind();
+			experienciaController.experienciasProperty().unbind();
+			habilidadesController.habilidadesProperty().unbind();
+
+		}
+
+		if (nv != null) {
+
+			personalController.personalProperty().bind(nv.personalProperty());
+			contactoController.contactoProperty().bind(nv.contactoProperty());
+			formacionController.formacionProperty().bind(nv.formacionProperty());
+			experienciaController.experienciasProperty().bind(nv.experenciasProperty());
+			habilidadesController.habilidadesProperty().bind(nv.habilidadesProperty());
+
+		}
+
 	}
 
 	@FXML
 	void onNuevoAction(ActionEvent event) {
-		nuevo(0);
+		nuevo();
 	}
-	
+
 	@FXML
-    void onAbrirAction(ActionEvent event) {
+	void onAbrirAction(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Abrir archivo");
 		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
 		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
 		fileChooser.getExtensionFilters().add(jpgFilter);
 		fileChooser.setSelectedExtensionFilter(jpgFilter);
-		
+
 		File selectedFile = fileChooser.showOpenDialog(MiCVApp.primaryStage);
-		if(selectedFile != null) {
-			nuevo(1);
-			file = selectedFile;
+		if (selectedFile != null) {
+			abrir(selectedFile);
 		}
-		
-		abrir();
-		
-		MiCVApp.primaryStage.setTitle("MiCV ~ " + getFile().getAbsolutePath());
-    }
 
-    @FXML
-    void onGuardarAction(ActionEvent event) {
-    	if(file != null)
-    		guardar();
-    	else {
-    		guardarComo();
-    	}
-    }
-
-    @FXML
-    void onGuardarComoAction(ActionEvent event) {
-		
-    	guardarComo();
-    	
-    	MiCVApp.primaryStage.setTitle("MiCV ~ " + getFile().getAbsolutePath());
-    }
-
-    @FXML
-    void onSalirAction(ActionEvent event) {
-    	Alert alert = new Alert(AlertType.CONFIRMATION);
-    	alert.setTitle("Salir");
-    	alert.setHeaderText("Está a punto de salir de la aplicación.");
-    	alert.setContentText("¿Desea continuar?");
-    	alert.initOwner(MiCVApp.primaryStage);
-    	
-    	Optional<ButtonType> result = alert.showAndWait();
-    	if (result.get() == ButtonType.OK){
-    		MiCVApp.primaryStage.close();
-    	}
-    }
-
-	private void nuevo(int tipo) {
-	
-		file = null;
-		
-		personalController = new PersonalController();
-		contactoController = new ContactoController();
-		formacionController = new FormacionController();
-		experienciaController = new ExperienciaController();
-		habilidadesController = new HabilidadesController();
-		
-		initializeControllers();
-		
 	}
-	
-	private void abrir() {
+
+	@FXML
+	void onGuardarAction(ActionEvent event) {
+		if (file.get() != null)
+			guardar(file.get());
+		else {
+			guardarComo();
+		}
+	}
+
+	@FXML
+	void onGuardarComoAction(ActionEvent event) {
+
+		guardarComo();
+
+	}
+
+	@FXML
+	void onSalirAction(ActionEvent event) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Salir");
+		alert.setHeaderText("Está a punto de salir de la aplicación.");
+		alert.setContentText("¿Desea continuar?");
+		alert.initOwner(MiCVApp.primaryStage);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			MiCVApp.primaryStage.close();
+		}
+	}
+
+	private void nuevo() {
+
+		file.set(null);
+		cv.set(new CV());
+
+	}
+
+	private void abrir(File selectedFile) {
 		try {
-			cv = GsonHandler.loadCV(file);
-			personalController.loadPersonal(cv.getPersonal());
-			contactoController.loadContacto(cv.getContacto());
-			formacionController.loadFormacion(cv.getFormacion());
-			experienciaController.loadExperiencia(cv.getExperencias());
-			habilidadesController.loadHabilidades(cv.getHabilidades());
+			file.set(selectedFile);
+			cv.set(GsonHandler.loadCV(selectedFile));
 		} catch (Exception e) {
 			System.err.println("No se ha podido, jappens");
 			e.printStackTrace();
 		}
 	}
-	
-    private void guardar() {
-    	try {
-			file.createNewFile();
+
+	private void guardar(File selectedFile) {
+
+		file.set(selectedFile);
+
+		try {
+			file.get().createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	
-    	try {
-    		cv.setPersonal(personalController.getPersonal());
-    		cv.setContacto(contactoController.getContacto());
-    		cv.setFormacion(formacionController.getFormacion());
-    		cv.setExperencias(experienciaController.getExperencias());
-    		cv.setHabilidades(habilidadesController.getHabilidades());
-			GsonHandler.saveCV(cv, file);
+
+		try {
+			GsonHandler.saveCV(cv.get(), file.get());
 		} catch (Exception e) {
 			System.err.println("No se ha podido, jappens");
 			e.printStackTrace();
 		}
-    }
-    
-    private void guardarComo() {
-    	FileChooser fileChooser = new FileChooser();
+	}
+
+	private void guardarComo() {
+		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Guardar archivo");
 		fileChooser.setInitialDirectory(new File(DEFAULT_PATH));
-		fileChooser.setInitialFileName(file != null ? getFile().getName():"");
+		fileChooser.setInitialFileName(file.get() != null ? file.get().getName() : "");
 		ExtensionFilter jpgFilter = new ExtensionFilter("CV files", "*.cv");
 		fileChooser.getExtensionFilters().add(jpgFilter);
 		fileChooser.setSelectedExtensionFilter(jpgFilter);
-		
+
 		File selectedFile = fileChooser.showSaveDialog(MiCVApp.primaryStage);
-    	if(selectedFile != null) {
-    		file = selectedFile;
-    		guardar();
-    	}
-    }
+		if (selectedFile != null) {
+			guardar(selectedFile);
+		}
+	}
 
 	public BorderPane getView() {
 		return view;
@@ -258,13 +252,21 @@ public class MainController implements Initializable {
 	public final ListProperty<Nacionalidad> nacionalidadesProperty() {
 		return this.nacionalidades;
 	}
-	
-	public File getFile() {
-		return file;
-	}
-	
+
 	public final ListProperty<String> paisesProperty() {
 		return this.paises;
+	}
+
+	public final ObjectProperty<File> fileProperty() {
+		return this.file;
+	}
+
+	public final File getFile() {
+		return this.fileProperty().get();
+	}
+
+	public final void setFile(final File file) {
+		this.fileProperty().set(file);
 	}
 
 }

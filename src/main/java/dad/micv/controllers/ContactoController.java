@@ -12,8 +12,11 @@ import dad.micv.model.Email;
 import dad.micv.model.Telefono;
 import dad.micv.model.TipoTelefono;
 import dad.micv.model.Web;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,7 +34,7 @@ public class ContactoController implements Initializable {
 
 	// model
 	
-	private Contacto contacto = new Contacto();
+	private ObjectProperty<Contacto> contacto = new SimpleObjectProperty<>();
 	
 	// view
     
@@ -76,30 +79,51 @@ public class ContactoController implements Initializable {
 		
 		// bindings
 		
-		telefonosTable.itemsProperty().bind(contacto.telefonosProperty());
-		numeroColumn.setCellValueFactory(v -> v.getValue().telefonoProperty());
-		tipoColumn.setCellValueFactory(v -> v.getValue().tipoProperty());
-		
-		direccionTable.itemsProperty().bind(contacto.emailsProperty());
-		direccionColumn.setCellValueFactory(v -> v.getValue().direccionProperty());
-		
-		webTable.itemsProperty().bind(contacto.websProperty());
-		urlColumn.setCellValueFactory(v -> v.getValue().urlProperty());
 		
 		eliminarTelefonoButton.disableProperty().bind(telefonosTable.getSelectionModel().selectedItemProperty().isNull());
 		eliminarEmailButton.disableProperty().bind(direccionTable.getSelectionModel().selectedItemProperty().isNull());
 		eliminarWebButton.disableProperty().bind(webTable.getSelectionModel().selectedItemProperty().isNull());
 		
+		// listeners
+		
+		contacto.addListener(this::onContactoChanged);
+		
 	}
 	
+	private void onContactoChanged(ObservableValue<? extends Contacto> o, Contacto ov, Contacto nv) {
+		
+		if(ov != null) {
+			
+			telefonosTable.itemsProperty().unbind();
+			direccionTable.itemsProperty().unbind();
+			webTable.itemsProperty().unbind();
+			
+		}
+		
+		if(nv != null) {
+			
+			telefonosTable.itemsProperty().bind(contacto.get().telefonosProperty());
+			numeroColumn.setCellValueFactory(v -> v.getValue().telefonoProperty());
+			tipoColumn.setCellValueFactory(v -> v.getValue().tipoProperty());
+			
+			direccionTable.itemsProperty().bind(contacto.get().emailsProperty());
+			direccionColumn.setCellValueFactory(v -> v.getValue().direccionProperty());
+			
+			webTable.itemsProperty().bind(contacto.get().websProperty());
+			urlColumn.setCellValueFactory(v -> v.getValue().urlProperty());
+			
+		}
+		
+	}
+
 	@FXML
 	void onAñadirTelefonoButton(ActionEvent event) {
 		
 		NuevoTelefonoDialog ntd = new NuevoTelefonoDialog();
 		
 		Optional<Telefono> result = ntd.showAndWait();
-		if (result.isPresent() && !result.get().getTelefono().isBlank() && !(result.get() == null) && !contacto.getTelefonos().contains(result.get())){
-    		contacto.getTelefonos().add(result.get());
+		if (result.isPresent() && !result.get().getTelefono().isBlank() && !(result.get() == null) && !contacto.get().getTelefonos().contains(result.get())){
+    		contacto.get().getTelefonos().add(result.get());
     	}
 	}
 	
@@ -109,8 +133,8 @@ public class ContactoController implements Initializable {
 
     	// Traditional way to get the response value.
     	Optional<String> result = dialog.showAndWait();
-    	if (result.isPresent()  && !result.get().isBlank() && !contacto.getEmails().contains(new Email(result.get()))){
-    		contacto.getEmails().add(new Email(result.get()));
+    	if (result.isPresent()  && !result.get().isBlank() && !contacto.get().getEmails().contains(new Email(result.get()))){
+    		contacto.get().getEmails().add(new Email(result.get()));
     	}
     }
 
@@ -120,27 +144,27 @@ public class ContactoController implements Initializable {
 
     	// Traditional way to get the response value.
     	Optional<String> result = dialog.showAndWait();
-    	if (result.isPresent()  && !result.get().isBlank() && !contacto.getWebs().contains(new Web(result.get()))){
-    		contacto.getWebs().add(new Web(result.get()));
+    	if (result.isPresent()  && !result.get().isBlank() && !contacto.get().getWebs().contains(new Web(result.get()))){
+    		contacto.get().getWebs().add(new Web(result.get()));
     	}    	
     }
 
     @FXML
     void onEliminarTelefonoButton(ActionEvent event) {
     	if(createConfirmationDialog("teléfono"))
-    		contacto.getTelefonos().remove(telefonosTable.getSelectionModel().getSelectedItem());
+    		contacto.get().getTelefonos().remove(telefonosTable.getSelectionModel().getSelectedItem());
     }
     
     @FXML
     void onEliminarEmailButton(ActionEvent event) {
     	if(createConfirmationDialog("e-mail"))
-    		contacto.getEmails().remove(direccionTable.getSelectionModel().getSelectedItem());
+    		contacto.get().getEmails().remove(direccionTable.getSelectionModel().getSelectedItem());
     }
 
     @FXML
     void onEliminarWebButton(ActionEvent event) {
     	if(createConfirmationDialog("web"))
-    		contacto.getWebs().remove(webTable.getSelectionModel().getSelectedItem());
+    		contacto.get().getWebs().remove(webTable.getSelectionModel().getSelectedItem());
     }
     
     private TextInputDialog crearTextInputDialog(String prompt, String title, String header, String content) {
@@ -173,18 +197,21 @@ public class ContactoController implements Initializable {
     	}
     }
     
-    public Contacto getContacto() {
-    	return contacto;
-    }
-
-	public void loadContacto(Contacto contacto) {
-		telefonosTable.getItems().addAll(contacto.getTelefonos());
-		direccionTable.getItems().addAll(contacto.getEmails());
-		webTable.getItems().addAll(contacto.getWebs());
-	}
-    
     public SplitPane getView() {
 		return view;
 	}
 
+	public final ObjectProperty<Contacto> contactoProperty() {
+		return this.contacto;
+	}
+	
+	public final Contacto getContacto() {
+		return this.contactoProperty().get();
+	}
+
+	public final void setContacto(final Contacto contacto) {
+		this.contactoProperty().set(contacto);
+	}
+	
+    
 }

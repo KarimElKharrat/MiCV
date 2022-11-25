@@ -11,6 +11,7 @@ import dad.micv.dialogs.NuevoTituloDialog;
 import dad.micv.model.Titulo;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -66,16 +67,34 @@ public class FormacionController implements Initializable {
 		
 		// bindings
 		
-//		formacionTable.itemsProperty().bind(MainController.cv.formacionProperty());
-		formacionTable.itemsProperty().bind(formacion);
 		eliminarButton.disableProperty().bind(formacionTable.getSelectionModel().selectedItemProperty().isNull());
 		
-		// cell value factories
+		// listeners
 		
-		desdeColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
-		hastaColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
-		denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
-		organizacionColumn.setCellValueFactory(v -> v.getValue().organizadorProperty());
+		formacion.addListener(this::onFormacionChanged);
+		
+	}
+	
+	
+
+	private void onFormacionChanged(ObservableValue<? extends ObservableList<Titulo>> o, ObservableList<Titulo> ov, ObservableList<Titulo> nv) {
+		
+		if(ov != null) {
+			
+			formacionTable.itemsProperty().unbind();
+			
+		}
+		
+		if(nv != null) {
+			
+			formacionTable.itemsProperty().bind(formacion);
+			
+			desdeColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
+			hastaColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
+			denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
+			organizacionColumn.setCellValueFactory(v -> v.getValue().organizadorProperty());
+			
+		}
 		
 	}
 
@@ -104,16 +123,21 @@ public class FormacionController implements Initializable {
     	}
     }
     
-    public void loadFormacion(ObservableList<Titulo> formacion) {
-    	formacionTable.getItems().addAll(formacion);
-	}
-    
-    public ListProperty<Titulo> getFormacion() {
-		return formacion;
-	}
-    
     public BorderPane getView() {
 		return view;
 	}
+
+	public final ListProperty<Titulo> formacionProperty() {
+		return this.formacion;
+	}
+
+	public final ObservableList<Titulo> getFormacion() {
+		return this.formacionProperty().get();
+	}
+
+	public final void setFormacion(final ObservableList<Titulo> formacion) {
+		this.formacionProperty().set(formacion);
+	}
+	
     
 }

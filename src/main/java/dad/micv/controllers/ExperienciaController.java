@@ -11,6 +11,7 @@ import dad.micv.dialogs.NuevaExperienciaDialog;
 import dad.micv.model.Experiencia;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +30,7 @@ public class ExperienciaController implements Initializable {
 
 	// model
 	
-	private ListProperty<Experiencia> experencias = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private ListProperty<Experiencia> experiencias = new SimpleListProperty<>(FXCollections.observableArrayList());
 	
 	// view
 	
@@ -66,25 +67,43 @@ public class ExperienciaController implements Initializable {
 		
 		// bindings
 		
-		experienciaTable.itemsProperty().bind(experencias);
 		eliminarButton.disableProperty().bind(experienciaTable.getSelectionModel().selectedItemProperty().isNull());
 		
-		// cell value factories
+		// listeners
 		
-		desdeColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
-		hastaColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
-		denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
-		empleadorColumn.setCellValueFactory(v -> v.getValue().empleadorProperty());
+		experiencias.addListener(this::onExperienciasChanged);
 		
 	}
 
-    @FXML
+    private void onExperienciasChanged(ObservableValue<? extends ObservableList<Experiencia>> o,
+			ObservableList<Experiencia> ov, ObservableList<Experiencia> nv) {
+    	
+    	if(ov != null) {
+    		
+    		experienciaTable.itemsProperty().unbind();
+    		
+    	}
+    	
+    	if(nv != null) {
+    		
+    		experienciaTable.itemsProperty().bind(experiencias);
+    		
+    		desdeColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
+    		hastaColumn.setCellValueFactory(v -> v.getValue().desdeProperty());
+    		denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
+    		empleadorColumn.setCellValueFactory(v -> v.getValue().empleadorProperty());
+    		
+    	}
+    	
+	}
+
+	@FXML
     void onAñadirAction(ActionEvent event) {
     	NuevaExperienciaDialog dialog = new NuevaExperienciaDialog();
     	
 		Optional<Experiencia> result = dialog.showAndWait();
-		if(result.isPresent() && !experencias.contains(result.get())) {
-			experencias.add(result.get());
+		if(result.isPresent() && !experiencias.contains(result.get())) {
+			experiencias.add(result.get());
 		}
     }
 
@@ -98,20 +117,24 @@ public class ExperienciaController implements Initializable {
     	
     	Optional<ButtonType> result = alert.showAndWait();
     	if (result.get() == ButtonType.OK){
-    		experencias.remove(experienciaTable.getSelectionModel().getSelectedItem());
+    		experiencias.remove(experienciaTable.getSelectionModel().getSelectedItem());
     	}
     }
     
-    public void loadExperiencia(ObservableList<Experiencia> experiencias) {
-    	experienciaTable.getItems().addAll(experiencias);
-    }
-    
-    public ListProperty<Experiencia> getExperencias() {
-		return experencias;
-	}
-    
     public BorderPane getView() {
 		return view;
+	}
+
+	public final ListProperty<Experiencia> experienciasProperty() {
+		return this.experiencias;
+	}
+
+	public final ObservableList<Experiencia> getExperiencias() {
+		return this.experienciasProperty().get();
+	}
+
+	public final void setExperiencias(final ObservableList<Experiencia> experiencias) {
+		this.experienciasProperty().set(experiencias);
 	}
 
 }

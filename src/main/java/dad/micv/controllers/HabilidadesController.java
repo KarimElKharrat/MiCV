@@ -13,6 +13,7 @@ import dad.micv.model.Idioma;
 import dad.micv.model.Nivel;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,56 +65,36 @@ public class HabilidadesController implements Initializable {
 
 		// bindings
 
-		conocimientosTable.itemsProperty().bind(habilidades);
 		eliminarButton.disableProperty().bind(conocimientosTable.getSelectionModel().selectedItemProperty().isNull());
 
-		// cell value factories
+		// listeners
+		
+		habilidades.addListener(this::onHabilidadesChanged);
 
-		denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
-		nivelColumn.setCellValueFactory(v -> v.getValue().nivelProperty());
+	}
 
+	private void onHabilidadesChanged(ObservableValue<? extends ObservableList<Conocimiento>> o,
+			ObservableList<Conocimiento> ov, ObservableList<Conocimiento> nv) {
+		
+		if(ov != null) {
+			
+			conocimientosTable.itemsProperty().unbind();
+			
+		}
+		
+		if(nv != null) {
+			
+			conocimientosTable.itemsProperty().bind(habilidades);
+
+			denominacionColumn.setCellValueFactory(v -> v.getValue().denominacionProperty());
+			nivelColumn.setCellValueFactory(v -> v.getValue().nivelProperty());
+			
+		}
+		
 	}
 
 	@FXML
 	void onAñadirConocimientoAction(ActionEvent event) {
-
-//		añadirConocimientoController = new AñadirConocimientoController();
-//		añadirConocimientoController.getCertificacionLabel().setVisible(false);
-//		añadirConocimientoController.getCertificacionText().setVisible(false);
-//		añadirConocimientoController.getNivelCombo().getItems().addAll(Nivel.values());
-//		
-//		Dialog<Conocimiento> dialog = new Dialog<>();
-//		dialog.setTitle("Añadir conocimiento");
-//		dialog.setHeaderText("Añade un nuevo conocimiento.");
-//		dialog.setResizable(true);
-//		dialog.initOwner(MiCVApp.primaryStage);
-//		
-//		ButtonType loginButtonType = new ButtonType("Crear", ButtonData.OK_DONE);
-//		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-//
-//		dialog.getDialogPane().setContent(añadirConocimientoController.getView());
-//
-//		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-//		loginButton.setDisable(true);
-//		
-//		añadirConocimientoController.getDenominacionText().textProperty().addListener((o, ov, nv) -> {
-//		    loginButton.setDisable(disableAñadirButton(1));
-//		});
-//		añadirConocimientoController.getNivelCombo().valueProperty().addListener((o, ov, nv) -> {
-//			loginButton.setDisable(disableAñadirButton(1));
-//		});
-//		
-//		Platform.runLater(() -> añadirConocimientoController.getDenominacionText());
-//
-//		dialog.setResultConverter(dialogButton -> {
-//		    if (dialogButton == loginButtonType) {
-//		        return new Conocimiento(
-//	        		añadirConocimientoController.getDenominacionText().getText(), 
-//	        		añadirConocimientoController.getNivelCombo().getValue()
-//        		);
-//		    }
-//		    return null;
-//		});
 
 		NuevoConocimientoDialog dialog = new NuevoConocimientoDialog();
 
@@ -126,42 +107,6 @@ public class HabilidadesController implements Initializable {
 
 	@FXML
 	void onAñadirIdiomaAction(ActionEvent event) {
-//		añadirConocimientoController = new AñadirConocimientoController();
-//		añadirConocimientoController.getNivelCombo().getItems().addAll(Nivel.values());
-//
-//		Dialog<Idioma> dialog = new Dialog<>();
-//		dialog.setTitle("Añadir idioma");
-//		dialog.setHeaderText("Añade un nuevo idioma.");
-//		dialog.initOwner(MiCVApp.primaryStage);
-//
-//		ButtonType loginButtonType = new ButtonType("Crear", ButtonData.OK_DONE);
-//		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-//
-//		dialog.getDialogPane().setContent(añadirConocimientoController.getView());
-//
-//		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-//		loginButton.setDisable(true);
-//
-//		añadirConocimientoController.getDenominacionText().textProperty().addListener((o, ov, nv) -> {
-//			loginButton.setDisable(disableAñadirButton(2));
-//		});
-//		añadirConocimientoController.getNivelCombo().valueProperty().addListener((o, ov, nv) -> {
-//			loginButton.setDisable(disableAñadirButton(2));
-//		});
-//		añadirConocimientoController.getCertificacionText().textProperty().addListener((o, ov, nv) -> {
-//			loginButton.setDisable(disableAñadirButton(2));
-//		});
-//
-//		Platform.runLater(() -> añadirConocimientoController.getDenominacionText());
-//
-//		dialog.setResultConverter(dialogButton -> {
-//			if (dialogButton == loginButtonType) {
-//				return new Idioma(añadirConocimientoController.getDenominacionText().getText(),
-//						añadirConocimientoController.getNivelCombo().getValue(),
-//						añadirConocimientoController.getCertificacionText().getText());
-//			}
-//			return null;
-//		});
 		
 		NuevoIdiomaDialog dialog = new NuevoIdiomaDialog();
 
@@ -187,16 +132,20 @@ public class HabilidadesController implements Initializable {
 
 	}
 
-	public void loadHabilidades(ObservableList<Conocimiento> habilidades) {
-		conocimientosTable.getItems().addAll(habilidades);
-	}
-
-	public ListProperty<Conocimiento> getHabilidades() {
-		return habilidades;
-	}
-
 	public BorderPane getView() {
 		return view;
 	}
 
+	public final ListProperty<Conocimiento> habilidadesProperty() {
+		return this.habilidades;
+	}
+
+	public final ObservableList<Conocimiento> getHabilidades() {
+		return this.habilidadesProperty().get();
+	}
+
+	public final void setHabilidades(final ObservableList<Conocimiento> habilidades) {
+		this.habilidadesProperty().set(habilidades);
+	}
+	
 }
