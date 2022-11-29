@@ -79,7 +79,6 @@ public class ContactoController implements Initializable {
 		
 		// bindings
 		
-		
 		eliminarTelefonoButton.disableProperty().bind(telefonosTable.getSelectionModel().selectedItemProperty().isNull());
 		eliminarEmailButton.disableProperty().bind(direccionTable.getSelectionModel().selectedItemProperty().isNull());
 		eliminarWebButton.disableProperty().bind(webTable.getSelectionModel().selectedItemProperty().isNull());
@@ -102,14 +101,14 @@ public class ContactoController implements Initializable {
 		
 		if(nv != null) {
 			
-			telefonosTable.itemsProperty().bind(contacto.get().telefonosProperty());
+			telefonosTable.itemsProperty().bind(nv.telefonosProperty());
 			numeroColumn.setCellValueFactory(v -> v.getValue().telefonoProperty());
 			tipoColumn.setCellValueFactory(v -> v.getValue().tipoProperty());
 			
-			direccionTable.itemsProperty().bind(contacto.get().emailsProperty());
+			direccionTable.itemsProperty().bind(nv.emailsProperty());
 			direccionColumn.setCellValueFactory(v -> v.getValue().direccionProperty());
 			
-			webTable.itemsProperty().bind(contacto.get().websProperty());
+			webTable.itemsProperty().bind(nv.websProperty());
 			urlColumn.setCellValueFactory(v -> v.getValue().urlProperty());
 			
 		}
